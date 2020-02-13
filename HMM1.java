@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 
 public class HMM1 {
-
+    // Probability of Emission Sequence
     public static double[][] str2Mat(String sr){
         String[] splitSr = sr.split(" ");
 
@@ -21,7 +21,7 @@ public class HMM1 {
         return matrix;
     }
 
-    public static int[] str2list(String sr){
+    public static int[] str2Array(String sr){
         String[] splitSr = sr.split(" ");
         int [] emSeq = new int[splitSr.length-1];
         for (int i = 0; i < splitSr.length - 1; i++){
@@ -30,7 +30,7 @@ public class HMM1 {
         return emSeq;
     }
 
-    public static double alphaPass(double[][] A, double[][] B, double[][] pi, int[] O){
+    public static double forwardAlgorithm(double[][] A, double[][] B, double[][] pi, int[] O){
         int hiddenStates = A[0].length; //N of hidden states
         int nEmissions = O.length;
         double alphaSum = 0.0;
@@ -70,10 +70,19 @@ public class HMM1 {
         double[][] A = str2Mat(lineA);
         double[][] B = str2Mat(lineB);
         double[][] pi = str2Mat(linePi);
-        int[] O = str2list(lineObs);
+        int[] O = str2Array(lineObs);
 
-        double alpha = alphaPass(A, B, pi, O);
+        double alpha = forwardAlgorithm(A, B, pi, O);
         System.out.println(alpha);
     }
-
 }
+
+/* Sample input:
+4 4 0.0 0.8 0.1 0.1 0.1 0.0 0.8 0.1 0.1 0.1 0.0 0.8 0.8 0.1 0.1 0.0
+4 4 0.9 0.1 0.0 0.0 0.0 0.9 0.1 0.0 0.0 0.0 0.9 0.1 0.1 0.0 0.0 0.9
+1 4 1.0 0.0 0.0 0.0
+8 0 1 2 3 0 1 2 3
+
+Sample output:
+0.090276
+ */

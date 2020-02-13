@@ -1,8 +1,8 @@
 import java.util.Scanner;
 
 public class HMM0 {
+    // Next Emission Distribution
     public static double[][] str2Mat(String sr){
-
         String[] splitSr = sr.split(" ");
         int nRows = Integer.parseInt(splitSr[0]);
         int nCols = Integer.parseInt(splitSr[1]);
@@ -17,6 +17,20 @@ public class HMM0 {
             }
         }
         return matrix;
+    }
+
+    public static String mat2str(double[][] c){
+        String[] d = new String[c.length * c[0].length + 2];
+        d[0] = String.valueOf(c.length);
+        d[1] = String.valueOf(c[0].length);
+        int k =0;
+        for (int i = 0; i < c.length; i++){
+            for (int j = 0; j < c[0].length; j++){
+                d[k+2] = String.valueOf((c[i][j]));
+                k++;
+            }
+        }
+        return String.join(" ", d);
     }
 
     public static double[][] matMul(double[][] a, double[][] b){
@@ -38,24 +52,7 @@ public class HMM0 {
         return c;
     }
 
-    public static String mat2str(double[][] c){
-        String[] d = new String[c.length * c[0].length + 2];
-        d[0] = String.valueOf(c.length);
-        d[1] = String.valueOf(c[0].length);
-        int k =0;
-        for (int i = 0; i < c.length; i++){
-            for (int j = 0; j < c[0].length; j++){
-                d[k+2] = String.valueOf((c[i][j]));
-                k++;
-            }
-        }
-        String e = String.join(" ", d);
-
-        return e;
-    }
-
     public static void main( String args[]) {
-
         Scanner scanString = new Scanner(System.in);
 
         String lineA = scanString.nextLine();
@@ -69,8 +66,15 @@ public class HMM0 {
         double[][] stateProb = matMul(pi, A);
         double[][] emissionProb = matMul(stateProb, B);
 
-        String lineEmissionProb = mat2str(emissionProb);
-        System.out.println(lineEmissionProb);
+        System.out.println(mat2str(emissionProb));
     }
-
 }
+
+/* Sample input
+4 4 0.2 0.5 0.3 0.0 0.1 0.4 0.4 0.1 0.2 0.0 0.4 0.4 0.2 0.3 0.0 0.5
+4 3 1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0 0.2 0.6 0.2
+1 4 0.0 0.0 0.0 1.0
+
+Sample output
+1 3 0.3 0.6 0.1
+ */
