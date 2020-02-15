@@ -203,7 +203,7 @@ public class HMM3 {
             logProb = -logProb;
 
             iteration++;
-            if ((iteration < maxIterations) && (logProb > oldLogProb)) {
+            if (iteration < maxIterations && logProb > oldLogProb) {
                 oldLogProb = logProb;
             } else {
                 break;
