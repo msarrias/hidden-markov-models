@@ -59,9 +59,9 @@ public class HMM0 {
         String lineB = scanString.nextLine();
         String linePi = scanString.nextLine();
 
-        double[][] A = str2Mat(lineA);
-        double[][] B = str2Mat(lineB);
-        double[][] pi = str2Mat(linePi);
+        double[][] A = str2Mat(lineA); // state transition probabilities
+        double[][] B = str2Mat(lineB); // observation probability matrix
+        double[][] pi = str2Mat(linePi); // initial state distribution
 
         double[][] stateProb = matMul(pi, A);
         double[][] emissionProb = matMul(stateProb, B);

@@ -31,29 +31,34 @@ public class HMM1 {
     }
 
     public static double forwardAlgorithm(double[][] A, double[][] B, double[][] pi, int[] O){
-        int hiddenStates = A[0].length; //N of hidden states
-        int nEmissions = O.length;
+        int N = A[0].length; // number of states in the model
+        int T = O.length; // length of the observation sequence
         double alphaSum = 0.0;
 
-        double[][] alpha = new double[nEmissions][hiddenStates];
+        double[][] alpha = new double[T][N];
 
-        for (int t = 0; t < nEmissions; t++){
+        for (int t = 0; t < T; t++){
             if (t == 0){
-                for (int i = 0; i < hiddenStates; i++){
+                for (int i = 0; i < N; i++){
                     alpha[0][i] = pi[0][i] * B[i][O[0]];
                 }
             } else {
-                for (int i = 0; i < hiddenStates; i++){
+                for (int i = 0; i < N; i++){
                     double result = 0;
-                    for (int j = 0; j < hiddenStates; j++){
+                    for (int j = 0; j < N; j++){
                         result += alpha[t-1][j] * A[j][i];
                     }
+                    /*this is the probability of the partial
+                    observation sequence up to time "t" where
+                    the underlying Markov process is in state
+                    O[t] at time "t".
+                     */
                     alpha[t][i] = result * B[i][O[t]];
                 }
             }
         }
-        for (int i = 0; i < hiddenStates; i++){
-            alphaSum += alpha[nEmissions-1][i];
+        for (int i = 0; i < N; i++){
+            alphaSum += alpha[T-1][i];
         }
         return alphaSum;
     }
@@ -67,12 +72,12 @@ public class HMM1 {
         String linePi = scanString.nextLine();
         String lineObs = scanString.nextLine();
 
-        double[][] A = str2Mat(lineA);
-        double[][] B = str2Mat(lineB);
-        double[][] pi = str2Mat(linePi);
-        int[] O = str2Array(lineObs);
+        double[][] A = str2Mat(lineA); // state transition probabilities
+        double[][] B = str2Mat(lineB); // observation probability matrix
+        double[][] pi = str2Mat(linePi); // initial state distribution
+        int[] O = str2Array(lineObs); // observation sequence:
 
-        double alpha = forwardAlgorithm(A, B, pi, O);
+        double alpha = forwardAlgorithm(A, B, pi, O); // alpha-pass
         System.out.println(alpha);
     }
 }

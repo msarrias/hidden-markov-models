@@ -1,6 +1,7 @@
 import java.util.Scanner;
 
 public class HMM2 {
+
     //Estimate Sequence of States
     public static double[][] str2Mat(String sr){
         String[] splitSr = sr.split(" ");
@@ -39,25 +40,27 @@ public class HMM2 {
 
 
     public static int[] ViterbiAlgorithm(double[][] A, double[][] B, double[][] pi, int[] O){
-        int nHiddenStates = A[0].length; //N of hidden states
-        int nEmissions = O.length; //N of emissions
+        int N = A[0].length; // number of states in the model
+        int T = O.length; // length of the observation sequence
         double max;
         int maxIdx;
-        double[][] delta = new double[nEmissions][nHiddenStates];
-        int [][] deltaIndex = new int[nEmissions][nHiddenStates];
+        double[][] delta = new double[T][N];
+        int [][] deltaIndex = new int[T][N];
         int [] bestPath = new int[O.length];
 
-        for (int t = 0; t < nEmissions; t++){
+        // underflow-resistant version of the DP algorithm.
+        for (int t = 0; t < T; t++){
             if (t == 0){
-                for (int i = 0; i < nHiddenStates; i++){
+                for (int i = 0; i < N; i++){
                     delta[0][i] = Math.log(pi[0][i] * B[i][O[0]]);
                 }
             } else {
-                for (int i = 0; i < nHiddenStates; i++){
+                for (int i = 0; i < N; i++){
                     maxIdx = 0;
                     max = -16;
-                    for (int j = 0; j < nHiddenStates; j++){
-                        double temp = delta[t-1][j] + Math.log(A[j][i]) + Math.log(B[i][O[t]]);
+                    for (int j = 0; j < N; j++){
+                        double temp = delta[t-1][j] + Math.log(A[j][i]) +
+                                Math.log(B[i][O[t]]);
                         if (temp > max){
                             maxIdx = j;
                             max = temp;
@@ -68,10 +71,11 @@ public class HMM2 {
                 }
             }
         }
-        for (int t = nEmissions - 1; t >= 0; t--){
-            if (t == nEmissions - 1){
+        // trace back from the highest-scoring final state.
+        for (int t = T - 1; t >= 0; t--){
+            if (t == T - 1){
                 max = -16;
-                for (int i = 0; i < nHiddenStates; i++){
+                for (int i = 0; i < N; i++){
                     if (delta[t][i] > max){
                         max = delta[t][i];
                         bestPath[t] = i;
@@ -90,10 +94,10 @@ public class HMM2 {
         String linePi = scanString.nextLine();
         String lineObs = scanString.nextLine();
 
-        double[][] A = str2Mat(lineA);
-        double[][] B = str2Mat(lineB);
-        double[][] pi = str2Mat(linePi);
-        int[] O = str2Array(lineObs);
+        double[][] A = str2Mat(lineA); // state transition probabilities
+        double[][] B = str2Mat(lineB); // observation probability matrix
+        double[][] pi = str2Mat(linePi); // initial state distribution
+        int[] O = str2Array(lineObs); // observation sequences
 
         int[] bestPath = ViterbiAlgorithm(A, B, pi, O);
         System.out.println(array2Str(bestPath));
